@@ -14,18 +14,18 @@ public class Email {
 
     @Getter
     @Column(name = "email")
-    private String email;
+    private String value;
 
-    public Email(String email) {
-        if (email == null) throw new IllegalArgumentException("Email não pode ser nulo.");
-        if (!email.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+    public Email(String value) {
+        if (value == null) throw new IllegalArgumentException("Email não pode ser nulo.");
+        if (!value.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
             throw new IllegalArgumentException("Email inválido.");
         }
-        this.email = email.toLowerCase();
+        this.value = value.toLowerCase();
     }
 
     @Override
     public String toString() {
-        return email;
+        return value;
     }
 }

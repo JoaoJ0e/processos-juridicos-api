@@ -9,13 +9,13 @@ class EmailTest {
     @Test
     void deveCriarEmailValido() {
         Email email = new Email("usuario@dominio.com");
-        assertThat(email.getEmail()).isEqualTo("usuario@dominio.com");
+        assertThat(email.getValue()).isEqualTo("usuario@dominio.com");
     }
 
     @Test
     void deveConverterParaMinusculo() {
         Email email = new Email("UsuARio@Dominio.COM");
-        assertThat(email.getEmail()).isEqualTo("usuario@dominio.com");
+        assertThat(email.getValue()).isEqualTo("usuario@dominio.com");
     }
 
     @Test

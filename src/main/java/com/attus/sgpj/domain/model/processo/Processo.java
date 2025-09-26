@@ -8,6 +8,7 @@ import com.attus.sgpj.domain.model.processo.status.ProcessoAberto;
 import com.attus.sgpj.domain.model.processo.status.ProcessoArquivado;
 import com.attus.sgpj.domain.model.processo.status.ProcessoState;
 import com.attus.sgpj.domain.model.processo.status.ProcessoSuspenso;
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -60,6 +61,8 @@ public class Processo {
         this.state = new ProcessoAberto();
     }
 
+    @PostLoad
+    @PostConstruct
     public void atualizarState() {
         switch (statusProcesso) {
             case ATIVO -> state = new ProcessoAberto();
@@ -110,6 +113,8 @@ public class Processo {
         this.acoes.removeIf(a -> a.getId().equals(acaoId));
     }
 
+
+    // Validacoes
     public boolean podeArquivar() {
         return temPartesObrigatorias(this.parteEnvolvidas)
                 && temAcoesObrigatorias(this.acoes);

@@ -1,6 +1,7 @@
 package com.attus.sgpj.domain.model.pessoa;
 
 
+import com.attus.sgpj.domain.dto.PessoaRequestDTO;
 import com.attus.sgpj.domain.vo.Email;
 import com.attus.sgpj.domain.vo.Telefone;
 import jakarta.persistence.*;
@@ -46,5 +47,13 @@ public class Pessoa {
 
     public static Pessoa create(String nomeCompleto, String cpfCnpj, String email, String telefone) { //TODO: Adicionar @NotNulls
         return new Pessoa(nomeCompleto, cpfCnpj, new Email(email), new Telefone(telefone));
+    }
+
+    public Pessoa update(PessoaRequestDTO dto) {
+        this.nomeCompleto = dto.nomeCompleto();
+        this.cpfCnpj = dto.cpfCnpj();
+        this.email = new Email(dto.email());
+        this.telefone = new Telefone(dto.telefone());
+        return this;
     }
 }
