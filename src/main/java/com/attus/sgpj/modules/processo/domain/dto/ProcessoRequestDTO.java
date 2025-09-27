@@ -8,10 +8,9 @@ import java.util.List;
 public record ProcessoRequestDTO(
         String numero,
         String descricao,
-        List<ParteEnvolvidaRequestDTO> partesEnvolvidas, //TODO: Remover por enquanto ou fazer não precisar de id processo
         LocalDate dataAbertura
 ) {
-    public ProcessoRequestDTO(String numero, String descricao, List<ParteEnvolvidaRequestDTO> partesEnvolvidas) {
-        this(numero, descricao, partesEnvolvidas, LocalDate.now());
+    public ProcessoRequestDTO(String numero, String descricao) {
+        this(numero, descricao, LocalDate.now());
     }
 }

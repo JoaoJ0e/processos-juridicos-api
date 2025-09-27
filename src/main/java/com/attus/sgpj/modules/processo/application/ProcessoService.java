@@ -1,19 +1,18 @@
 package com.attus.sgpj.modules.processo.application;
 
+import com.attus.sgpj.modules.acao.domain.Acao;
 import com.attus.sgpj.modules.acao.domain.dto.AcaoRequestDTO;
+import com.attus.sgpj.modules.parteenvolvida.domain.ParteEnvolvida;
+import com.attus.sgpj.modules.parteenvolvida.domain.dto.ParteEnvolvidaRequestDTO;
 import com.attus.sgpj.modules.pessoa.application.PessoaService;
 import com.attus.sgpj.modules.pessoa.domain.Pessoa;
-import com.attus.sgpj.modules.pessoa.domain.dto.PessoaResponseDTO;
 import com.attus.sgpj.modules.processo.domain.Processo;
 import com.attus.sgpj.modules.processo.domain.StatusProcessoEnum;
 import com.attus.sgpj.modules.processo.domain.dto.ProcessoRequestDTO;
 import com.attus.sgpj.modules.processo.domain.dto.ProcessoResponseDTO;
 import com.attus.sgpj.modules.processo.exception.ProcessoAlreadyExistsException;
-import com.attus.sgpj.modules.processo.exception.ProcessoNotFoundException;
 import com.attus.sgpj.modules.processo.exception.ProcessoCannotBeArchivedException;
-import com.attus.sgpj.modules.acao.domain.Acao;
-import com.attus.sgpj.modules.parteenvolvida.domain.ParteEnvolvida;
-import com.attus.sgpj.modules.parteenvolvida.domain.dto.ParteEnvolvidaRequestDTO;
+import com.attus.sgpj.modules.processo.exception.ProcessoNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

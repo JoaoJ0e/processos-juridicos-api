@@ -6,6 +6,5 @@ import java.util.UUID;
 
 public record ParteEnvolvidaRequestDTO(
         UUID pessoaId,
-        UUID processoId,
         TipoParteEnvolvidaEnum tipo
 ) {}

@@ -2,6 +2,7 @@ package com.attus.sgpj.modules.processo.application;
 
 import com.attus.sgpj.modules.processo.domain.Processo;
 import com.attus.sgpj.modules.processo.domain.StatusProcessoEnum;
+import com.attus.sgpj.shared.vo.CpfCnpj;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,7 +24,7 @@ public interface ProcessoRepository extends JpaRepository<Processo, UUID> {
     @Query("""
             select p from Processo p
             join p.parteEnvolvidas pe
-            where pe.pessoa.cpfCnpj = :cpfCnpj
+            where pe.pessoa.cpfCnpj.value = :cpfCnpj
             """)
     Page<Processo> findByParteEnvolvidaCpfCnpj(@Param("cpfCnpj") String cpfCnpj, Pageable pageable);
 
