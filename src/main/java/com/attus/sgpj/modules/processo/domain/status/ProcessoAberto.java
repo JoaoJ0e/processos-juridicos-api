@@ -19,10 +19,8 @@ public class ProcessoAberto implements ProcessoState {
     @Override
     public void arquivar(Processo processo) {
         if (!processo.podeArquivar()) {
-            throw new ProcessoInvalidStateTransitionException("Não é possível arquivar sem partes e ações obrigatórias.");
+            throw new ProcessoInvalidStateTransitionException("Processo não pode ser arquivado. Deve possuir todas as partes obrigatórias (AUTOR, RÉU, ADVOGADO) e ações obrigatórias (PETIÇÃO, AUDIÊNCIA e SENTENÇA ou DESISTÊNCIA).");
         }
         processo.setStatusProcesso(StatusProcessoEnum.ARQUIVADO);
     }
-
-
 }

@@ -1,10 +1,10 @@
 package com.attus.sgpj.shared.vo;
 
-import com.attus.sgpj.shared.vo.Email;
 import com.attus.sgpj.shared.vo.exception.InvalidFieldException;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class EmailTest {
 

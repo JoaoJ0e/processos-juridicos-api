@@ -151,12 +151,12 @@ public class Processo {
         return temAutor && temReu && temAdvogado;
     }
 
-    // TODO: Acao de Desistencia
     private boolean temAcoesObrigatorias(List<Acao> acoes) {
         boolean temPeticao = acoes.stream().anyMatch(a -> a.getTipo() == TipoAcaoEnum.PETICAO);
         boolean temAudiencia = acoes.stream().anyMatch(a -> a.getTipo() == TipoAcaoEnum.AUDIENCIA);
         boolean temSentenca = acoes.stream().anyMatch(a -> a.getTipo() == TipoAcaoEnum.SENTENCA);
-        return temPeticao && temAudiencia && temSentenca;
+        boolean temDesistencia = acoes.stream().anyMatch(a -> a.getTipo() == TipoAcaoEnum.DESISTENCIA);
+        return temPeticao && temAudiencia && (temSentenca || temDesistencia) ;
     }
 }
 

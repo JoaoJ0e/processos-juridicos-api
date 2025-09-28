@@ -102,14 +102,6 @@ public class ProcessoService {
         return processosPage.map(ProcessoResponseDTO::fromDomain);
     }
 
-    @Transactional(readOnly = true)
-    public Page<ProcessoResponseDTO> findByPessoaCpfCnpj(String cpfCnpj, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Processo> processosPage = processoRepository.findByParteEnvolvidaCpfCnpj(cpfCnpj, pageable);
-        return processosPage.map(ProcessoResponseDTO::fromDomain);
-    }
-
-    // Business operations
     public ProcessoResponseDTO ativar(UUID processoId) {
         Processo processo = findProcessoById(processoId);
         processo.ativar();
@@ -136,7 +128,7 @@ public class ProcessoService {
         return ProcessoResponseDTO.fromDomain(updatedProcesso);
     }
 
-    // Parte Envolvida operations
+    // Parte Envolvida
     public ProcessoResponseDTO addParteEnvolvida(UUID processoId, ParteEnvolvidaRequestDTO requestDTO) {
         Processo processo = findProcessoById(processoId);
         Pessoa pessoa = pessoaService.findDomainById(requestDTO.pessoaId());
@@ -167,7 +159,7 @@ public class ProcessoService {
         return ProcessoResponseDTO.fromDomain(updatedProcesso);
     }
 
-    // Ação operations
+    // Ação
     public ProcessoResponseDTO addAcaoProcesso(UUID processoId, AcaoRequestDTO requestDTO) {
         Processo processo = findProcessoById(processoId);
         Acao acao = Acao.create(requestDTO.tipo(), requestDTO.descricao(), processo);

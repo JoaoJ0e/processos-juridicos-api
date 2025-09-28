@@ -1,4 +1,3 @@
-// PessoaControllerWebMvcTest.java
 package com.attus.sgpj.modules.pessoa.application;
 
 import com.attus.sgpj.modules.pessoa.domain.dto.PessoaRequestDTO;
@@ -36,7 +35,7 @@ class PessoaControllerTest {
     PessoaService pessoaService;
 
     @Test
-    void create_returnsCreated() throws Exception {
+    void deveRetornarCreatedAoCriarPessoa() throws Exception {
         PessoaRequestDTO req = new PessoaRequestDTO("João Silva","12345678901","joao.silva@email.com","11987654321");
         PessoaResponseDTO res = new PessoaResponseDTO(UUID.randomUUID(),"João Silva","12345678901","joao.silva@email.com","11987654321");
 
@@ -51,7 +50,7 @@ class PessoaControllerTest {
     }
 
     @Test
-    void findById_returnsOk() throws Exception {
+    void deveRetornarOkAoBuscarPessoaPorId() throws Exception {
         UUID id = UUID.randomUUID();
         PessoaResponseDTO res = new PessoaResponseDTO(id,"Maria Oliveira","98765432100","maria.oliveira@email.com","21991234567");
         Mockito.when(pessoaService.findById(id)).thenReturn(res);
@@ -63,7 +62,7 @@ class PessoaControllerTest {
     }
 
     @Test
-    void update_returnsOk() throws Exception {
+    void deveRetornarOkAoAtualizarPessoa() throws Exception {
         UUID id = UUID.randomUUID();
         PessoaRequestDTO req = new PessoaRequestDTO("Carlos Souza","11122233344","carlos.souza@email.com","31987654321");
         PessoaResponseDTO res = new PessoaResponseDTO(id,"Carlos Souza","11122233344","carlos.souza@email.com","31987654321");
@@ -79,7 +78,7 @@ class PessoaControllerTest {
     }
 
     @Test
-    void findPaged_returnsOk() throws Exception {
+    void deveRetornarOkAoBuscarPessoasPaginadas() throws Exception {
         Mockito.when(pessoaService.findPaged(0,20,null,null))
                 .thenReturn(new PageImpl<>(List.of()));
 
@@ -89,7 +88,7 @@ class PessoaControllerTest {
     }
 
     @Test
-    void findByNome_returnsOk() throws Exception {
+    void deveRetornarOkAoBuscarPessoaPorNome() throws Exception {
         PessoaResponseDTO dto = new PessoaResponseDTO(
                 UUID.randomUUID(),
                 "João Silva",
@@ -98,8 +97,7 @@ class PessoaControllerTest {
                 "11999999999"
         );
 
-        // Mock with the actual default values your controller uses
-        Mockito.when(pessoaService.findByNomeContaining("joao", 0, 10))  // Changed to 10 if that's your default
+        Mockito.when(pessoaService.findByNomeContaining("joao", 0, 10))
                 .thenReturn(new PageImpl<>(List.of(dto)));
 
         mockMvc.perform(get("/pessoa/search")
@@ -110,9 +108,8 @@ class PessoaControllerTest {
                 .andExpect(jsonPath("$.content[0].cpfCnpj").value("12345678901"));
     }
 
-
     @Test
-    void findByCpfCnpj_returnsOk() throws Exception {
+    void deveRetornarOkAoBuscarPessoaPorCpfCnpj() throws Exception {
         PessoaResponseDTO res = new PessoaResponseDTO(UUID.randomUUID(),"Ana Lima","55566677788","ana.lima@email.com","41999998888");
         Mockito.when(pessoaService.findByCpfCnpj("55566677788")).thenReturn(res);
 
@@ -122,7 +119,7 @@ class PessoaControllerTest {
     }
 
     @Test
-    void findById_returnsNotFound() throws Exception {
+    void deveRetornarNotFoundAoBuscarPessoaInexistente() throws Exception {
         UUID id = UUID.randomUUID();
         Mockito.when(pessoaService.findById(id))
                 .thenThrow(new PessoaNotFoundException("Pessoa não encontrada com ID: " + id));
@@ -134,7 +131,7 @@ class PessoaControllerTest {
     }
 
     @Test
-    void create_returnsConflict_whenAlreadyExists() throws Exception {
+    void deveRetornarConflictQuandoPessoaJaExiste() throws Exception {
         PessoaRequestDTO req = new PessoaRequestDTO("João Silva","12345678901","joao.silva@email.com","11987654321");
 
         Mockito.when(pessoaService.create(any()))
@@ -147,5 +144,4 @@ class PessoaControllerTest {
                 .andExpect(jsonPath("$.code").value("PESSOA_ALREADY_EXISTS"))
                 .andExpect(jsonPath("$.message").value("CPF/CNPJ já está cadastrado: " + req.cpfCnpj()));
     }
-
 }

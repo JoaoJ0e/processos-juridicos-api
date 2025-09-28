@@ -49,22 +49,18 @@ class ProcessoServiceTest {
     private ProcessoService processoService;
 
     @Test
-    void create_shouldCreateProcesso_whenValidData() {
-        // Given
+    void deveCriarProcessoComDadosValidos() {
         ProcessoRequestDTO requestDTO = new ProcessoRequestDTO("12345678901234567890", "Processo de Teste", LocalDate.now());
 
         when(processoRepository.existsByNumero(requestDTO.numero())).thenReturn(false);
         when(processoRepository.save(any(Processo.class))).thenAnswer(invocation -> {
             Processo processo = invocation.getArgument(0);
-            // Simulate ID generation
             processo.setId(UUID.randomUUID());
             return processo;
         });
 
-        // When
         ProcessoResponseDTO result = processoService.create(requestDTO);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.numero()).isEqualTo("12345678901234567890");
         assertThat(result.descricao()).isEqualTo("Processo de Teste");
@@ -75,12 +71,10 @@ class ProcessoServiceTest {
     }
 
     @Test
-    void create_shouldThrowException_whenNumeroAlreadyExists() {
-        // Given
+    void deveLancarExcecaoQuandoNumeroJaExiste() {
         ProcessoRequestDTO requestDTO = new ProcessoRequestDTO("12345678901234567890", "Processo de Teste", LocalDate.now());
         when(processoRepository.existsByNumero(requestDTO.numero())).thenReturn(true);
 
-        // When & Then
         assertThatThrownBy(() -> processoService.create(requestDTO))
                 .isInstanceOf(ProcessoAlreadyExistsException.class)
                 .hasMessage("Um processo com número '12345678901234567890' já está cadastrado");
@@ -90,8 +84,7 @@ class ProcessoServiceTest {
     }
 
     @Test
-    void update_shouldUpdateProcesso_whenValidData() {
-        // Given
+    void deveAtualizarProcessoComDadosValidos() {
         UUID processoId = UUID.randomUUID();
         ProcessoRequestDTO requestDTO = new ProcessoRequestDTO("99999999999999999999", "Processo Atualizado", LocalDate.now());
 
@@ -102,10 +95,8 @@ class ProcessoServiceTest {
         when(processoRepository.existsByNumero(requestDTO.numero())).thenReturn(false);
         when(processoRepository.save(any(Processo.class))).thenReturn(existingProcesso);
 
-        // When
         ProcessoResponseDTO result = processoService.update(processoId, requestDTO);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.numero()).isEqualTo("99999999999999999999");
         assertThat(result.descricao()).isEqualTo("Processo Atualizado");
@@ -116,8 +107,7 @@ class ProcessoServiceTest {
     }
 
     @Test
-    void update_shouldThrowException_whenNumeroAlreadyExistsForOtherProcesso() {
-        // Given
+    void deveLancarExcecaoQuandoNumeroJaExisteParaOutroProcesso() {
         UUID processoId = UUID.randomUUID();
         ProcessoRequestDTO requestDTO = new ProcessoRequestDTO("99999999999999999999", "Processo Atualizado", LocalDate.now());
 
@@ -127,7 +117,6 @@ class ProcessoServiceTest {
         when(processoRepository.findById(processoId)).thenReturn(Optional.of(existingProcesso));
         when(processoRepository.existsByNumero(requestDTO.numero())).thenReturn(true);
 
-        // When & Then
         assertThatThrownBy(() -> processoService.update(processoId, requestDTO))
                 .isInstanceOf(ProcessoAlreadyExistsException.class)
                 .hasMessage("Um processo com número '99999999999999999999' já está cadastrado");
@@ -138,8 +127,7 @@ class ProcessoServiceTest {
     }
 
     @Test
-    void update_shouldAllowSameNumero_whenUpdatingExistingProcesso() {
-        // Given
+    void devePermitirMesmoNumeroQuandoAtualizandoProcessoExistente() {
         UUID processoId = UUID.randomUUID();
         ProcessoRequestDTO requestDTO = new ProcessoRequestDTO("12345678901234567890", "Descrição Atualizada", LocalDate.now());
 
@@ -149,10 +137,8 @@ class ProcessoServiceTest {
         when(processoRepository.findById(processoId)).thenReturn(Optional.of(existingProcesso));
         when(processoRepository.save(any(Processo.class))).thenReturn(existingProcesso);
 
-        // When
         ProcessoResponseDTO result = processoService.update(processoId, requestDTO);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.descricao()).isEqualTo("Descrição Atualizada");
 
@@ -162,18 +148,15 @@ class ProcessoServiceTest {
     }
 
     @Test
-    void findById_shouldReturnProcesso_whenExists() {
-        // Given
+    void deveRetornarProcessoQuandoExiste() {
         UUID processoId = UUID.randomUUID();
         Processo processo = Processo.create("12345678901234567890", "Processo Teste", LocalDate.now());
         processo.setId(processoId);
 
         when(processoRepository.findById(processoId)).thenReturn(Optional.of(processo));
 
-        // When
         ProcessoResponseDTO result = processoService.findById(processoId);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.id()).isEqualTo(processoId);
         assertThat(result.numero()).isEqualTo("12345678901234567890");
@@ -182,12 +165,10 @@ class ProcessoServiceTest {
     }
 
     @Test
-    void findById_shouldThrowException_whenNotExists() {
-        // Given
+    void deveLancarExcecaoQuandoProcessoNaoExiste() {
         UUID processoId = UUID.randomUUID();
         when(processoRepository.findById(processoId)).thenReturn(Optional.empty());
 
-        // When & Then
         assertThatThrownBy(() -> processoService.findById(processoId))
                 .isInstanceOf(ProcessoNotFoundException.class)
                 .hasMessage("Processo não encontrado com ID: " + processoId);
@@ -196,17 +177,14 @@ class ProcessoServiceTest {
     }
 
     @Test
-    void findPaged_shouldReturnPagedResults_withoutSorting() {
-        // Given
+    void deveRetornarResultadosPaginadosSemOrdenacao() {
         Processo processo = Processo.create("12345678901234567890", "Processo Teste", LocalDate.now());
         Page<Processo> processosPage = new PageImpl<>(List.of(processo));
 
         when(processoRepository.findAll(any(Pageable.class))).thenReturn(processosPage);
 
-        // When
         Page<ProcessoResponseDTO> result = processoService.findPaged(0, 10, null, null);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0).numero()).isEqualTo("12345678901234567890");
@@ -221,18 +199,15 @@ class ProcessoServiceTest {
     }
 
     @Test
-    void findByStatus_shouldReturnFilteredResults() {
-        // Given
+    void deveRetornarResultadosFiltradosPorStatus() {
         Processo processo = Processo.create("12345678901234567890", "Processo Ativo", LocalDate.now());
         Page<Processo> processosPage = new PageImpl<>(List.of(processo));
 
         when(processoRepository.findByStatusProcesso(eq(StatusProcessoEnum.ATIVO), any(Pageable.class)))
                 .thenReturn(processosPage);
 
-        // When
         Page<ProcessoResponseDTO> result = processoService.findByStatus(StatusProcessoEnum.ATIVO, 0, 10);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0).statusProcesso()).isEqualTo(StatusProcessoEnum.ATIVO);
@@ -241,8 +216,7 @@ class ProcessoServiceTest {
     }
 
     @Test
-    void findByDataAbertura_shouldReturnFilteredResults() {
-        // Given
+    void deveRetornarResultadosFiltradosPorDataAbertura() {
         LocalDate dataInicial = LocalDate.of(2024, 1, 1);
         LocalDate dataFinal = LocalDate.of(2024, 12, 31);
         LocalDate dataProcesso = LocalDate.of(2024, 6, 15);
@@ -253,10 +227,8 @@ class ProcessoServiceTest {
         when(processoRepository.findByDataAberturaBetween(eq(dataInicial), eq(dataFinal), any(Pageable.class)))
                 .thenReturn(processosPage);
 
-        // When
         Page<ProcessoResponseDTO> result = processoService.findByDataAbertura(dataInicial, dataFinal, 0, 10);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0).dataAbertura()).isEqualTo(dataProcesso);
@@ -265,20 +237,17 @@ class ProcessoServiceTest {
     }
 
     @Test
-    void ativar_shouldActivateProcesso() {
-        // Given
+    void deveAtivarProcesso() {
         UUID processoId = UUID.randomUUID();
         Processo processo = Processo.create("12345678901234567890", "Processo Teste", LocalDate.now());
         processo.setId(processoId);
-        processo.suspender(); // Start with suspended status
+        processo.suspender();
 
         when(processoRepository.findById(processoId)).thenReturn(Optional.of(processo));
         when(processoRepository.save(any(Processo.class))).thenReturn(processo);
 
-        // When
         ProcessoResponseDTO result = processoService.ativar(processoId);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.statusProcesso()).isEqualTo(StatusProcessoEnum.ATIVO);
 
@@ -287,8 +256,7 @@ class ProcessoServiceTest {
     }
 
     @Test
-    void suspender_shouldSuspendProcesso() {
-        // Given
+    void deveSuspenderProcesso() {
         UUID processoId = UUID.randomUUID();
         Processo processo = Processo.create("12345678901234567890", "Processo Teste", LocalDate.now());
         processo.setId(processoId);
@@ -296,10 +264,8 @@ class ProcessoServiceTest {
         when(processoRepository.findById(processoId)).thenReturn(Optional.of(processo));
         when(processoRepository.save(any(Processo.class))).thenReturn(processo);
 
-        // When
         ProcessoResponseDTO result = processoService.suspender(processoId);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.statusProcesso()).isEqualTo(StatusProcessoEnum.SUSPENSO);
 
@@ -308,8 +274,7 @@ class ProcessoServiceTest {
     }
 
     @Test
-    void arquivar_shouldArchiveProcesso_whenHasRequiredPartesAndAcoes() {
-        // Given
+    void deveArquivarProcessoQuandoTemPartesEAcoesObrigatorias() {
         UUID processoId = UUID.randomUUID();
         Processo processo = createProcessoWithRequiredPartesAndAcoes();
         processo.setId(processoId);
@@ -317,10 +282,8 @@ class ProcessoServiceTest {
         when(processoRepository.findById(processoId)).thenReturn(Optional.of(processo));
         when(processoRepository.save(any(Processo.class))).thenReturn(processo);
 
-        // When
         ProcessoResponseDTO result = processoService.arquivar(processoId);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.statusProcesso()).isEqualTo(StatusProcessoEnum.ARQUIVADO);
 
@@ -329,15 +292,13 @@ class ProcessoServiceTest {
     }
 
     @Test
-    void arquivar_shouldThrowException_whenMissingRequiredPartesOrAcoes() {
-        // Given
+    void deveLancarExcecaoQuandoFaltamPartesOuAcoesObrigatorias() {
         UUID processoId = UUID.randomUUID();
         Processo processo = Processo.create("12345678901234567890", "Processo Incompleto", LocalDate.now());
         processo.setId(processoId);
 
         when(processoRepository.findById(processoId)).thenReturn(Optional.of(processo));
 
-        // When & Then
         assertThatThrownBy(() -> processoService.arquivar(processoId))
                 .isInstanceOf(ProcessoCannotBeArchivedException.class)
                 .hasMessage("Processo não pode ser arquivado. Verifique se possui todas as partes obrigatórias (AUTOR, RÉU, ADVOGADO) e ações obrigatórias (PETIÇÃO, AUDIÊNCIA, SENTENÇA).");
@@ -347,8 +308,7 @@ class ProcessoServiceTest {
     }
 
     @Test
-    void addParteEnvolvida_shouldAddParte() {
-        // Given
+    void deveAdicionarParteEnvolvida() {
         UUID processoId = UUID.randomUUID();
         UUID pessoaId = UUID.randomUUID();
 
@@ -362,10 +322,8 @@ class ProcessoServiceTest {
         when(pessoaService.findDomainById(pessoaId)).thenReturn(pessoa);
         when(processoRepository.save(any(Processo.class))).thenReturn(processo);
 
-        // When
         ProcessoResponseDTO result = processoService.addParteEnvolvida(processoId, requestDTO);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(processo.getParteEnvolvidas()).hasSize(1);
         assertThat(processo.getParteEnvolvidas().get(0).getPessoa()).isEqualTo(pessoa);
@@ -377,8 +335,7 @@ class ProcessoServiceTest {
     }
 
     @Test
-    void addPartesEnvolvidas_shouldAddMultiplePartes() {
-        // Given
+    void deveAdicionarMultiplasPartesEnvolvidas() {
         UUID processoId = UUID.randomUUID();
         UUID pessoaId1 = UUID.randomUUID();
         UUID pessoaId2 = UUID.randomUUID();
@@ -399,10 +356,8 @@ class ProcessoServiceTest {
         when(pessoaService.findDomainById(pessoaId2)).thenReturn(pessoa2);
         when(processoRepository.save(any(Processo.class))).thenReturn(processo);
 
-        // When
         ProcessoResponseDTO result = processoService.addPartesEnvolvidas(processoId, requestDTOs);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(processo.getParteEnvolvidas()).hasSize(2);
 
@@ -413,15 +368,13 @@ class ProcessoServiceTest {
     }
 
     @Test
-    void removeParteEnvolvida_shouldRemoveParte() {
-        // Given
+    void deveRemoverParteEnvolvida() {
         UUID processoId = UUID.randomUUID();
         UUID parteId = UUID.randomUUID();
 
         Processo processo = Processo.create("12345678901234567890", "Processo Teste", LocalDate.now());
         processo.setId(processoId);
 
-        // Add a parte to remove
         Pessoa pessoa = Pessoa.create("João Silva", "12345678901", "joao.silva@email.com", "11999999999");
         ParteEnvolvida parte = ParteEnvolvida.create(pessoa, processo, TipoParteEnvolvidaEnum.AUTOR);
         parte.setId(parteId);
@@ -430,20 +383,16 @@ class ProcessoServiceTest {
         when(processoRepository.findById(processoId)).thenReturn(Optional.of(processo));
         when(processoRepository.save(any(Processo.class))).thenReturn(processo);
 
-        // When
         ProcessoResponseDTO result = processoService.removeParteEnvolvida(processoId, parteId);
 
-        // Then
         assertThat(result).isNotNull();
-        // Note: The actual removal logic is in the domain, so we're testing the service coordination
 
         verify(processoRepository).findById(processoId);
         verify(processoRepository).save(processo);
     }
 
     @Test
-    void addAcaoProcesso_shouldAddAcao() {
-        // Given
+    void deveAdicionarAcaoProcesso() {
         UUID processoId = UUID.randomUUID();
         Processo processo = Processo.create("12345678901234567890", "Processo Teste", LocalDate.now());
         processo.setId(processoId);
@@ -453,10 +402,8 @@ class ProcessoServiceTest {
         when(processoRepository.findById(processoId)).thenReturn(Optional.of(processo));
         when(processoRepository.save(any(Processo.class))).thenReturn(processo);
 
-        // When
         ProcessoResponseDTO result = processoService.addAcaoProcesso(processoId, requestDTO);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(processo.getAcoes()).hasSize(1);
         assertThat(processo.getAcoes().get(0).getTipo()).isEqualTo(TipoAcaoEnum.PETICAO);
@@ -467,8 +414,7 @@ class ProcessoServiceTest {
     }
 
     @Test
-    void addAcoesProcesso_shouldAddMultipleAcoes() {
-        // Given
+    void deveAdicionarMultiplasAcoesProcesso() {
         UUID processoId = UUID.randomUUID();
         Processo processo = Processo.create("12345678901234567890", "Processo Teste", LocalDate.now());
         processo.setId(processoId);
@@ -481,10 +427,8 @@ class ProcessoServiceTest {
         when(processoRepository.findById(processoId)).thenReturn(Optional.of(processo));
         when(processoRepository.save(any(Processo.class))).thenReturn(processo);
 
-        // When
         ProcessoResponseDTO result = processoService.addAcoesProcesso(processoId, requestDTOs);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(processo.getAcoes()).hasSize(2);
 
@@ -493,15 +437,13 @@ class ProcessoServiceTest {
     }
 
     @Test
-    void removeAcaoProcesso_shouldRemoveAcao() {
-        // Given
+    void deveRemoverAcaoProcesso() {
         UUID processoId = UUID.randomUUID();
         UUID acaoId = UUID.randomUUID();
 
         Processo processo = Processo.create("12345678901234567890", "Processo Teste", LocalDate.now());
         processo.setId(processoId);
 
-        // Add an acao to remove
         Acao acao = Acao.create(TipoAcaoEnum.PETICAO, "Petição Inicial", processo);
         acao.setId(acaoId);
         processo.adicionarAcao(acao);
@@ -509,22 +451,17 @@ class ProcessoServiceTest {
         when(processoRepository.findById(processoId)).thenReturn(Optional.of(processo));
         when(processoRepository.save(any(Processo.class))).thenReturn(processo);
 
-        // When
         ProcessoResponseDTO result = processoService.removeAcaoProcesso(processoId, acaoId);
 
-        // Then
         assertThat(result).isNotNull();
-        // Note: The actual removal logic is in the domain, so we're testing the service coordination
 
         verify(processoRepository).findById(processoId);
         verify(processoRepository).save(processo);
     }
 
-    // Helper methods
     private Processo createProcessoWithRequiredPartesAndAcoes() {
         Processo processo = Processo.create("12345678901234567890", "Processo Completo", LocalDate.now());
 
-        // Add required partes
         Pessoa autor = Pessoa.create("João Silva", "12345678901", "joao.silva@email.com", "11999999999");
         Pessoa reu = Pessoa.create("Maria Santos", "98765432100", "maria.santos@email.com", "11888888888");
         Pessoa advogado = Pessoa.create("Carlos Advogado", "11122233344", "carlos.advogado@email.com", "11777777777");
@@ -533,7 +470,6 @@ class ProcessoServiceTest {
         processo.addParte(ParteEnvolvida.create(reu, processo, TipoParteEnvolvidaEnum.REU));
         processo.addParte(ParteEnvolvida.create(advogado, processo, TipoParteEnvolvidaEnum.ADVOGADO));
 
-        // Add required acoes
         processo.adicionarAcao(Acao.create(TipoAcaoEnum.PETICAO, "Petição Inicial", processo));
         processo.adicionarAcao(Acao.create(TipoAcaoEnum.AUDIENCIA, "Audiência de Instrução", processo));
         processo.adicionarAcao(Acao.create(TipoAcaoEnum.SENTENCA, "Sentença Final", processo));

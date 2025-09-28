@@ -9,7 +9,6 @@ import com.attus.sgpj.modules.processo.exception.ProcessoNotFoundException;
 import com.attus.sgpj.shared.vo.exception.InvalidFieldException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -93,17 +92,7 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
-        /// END VO ///
-
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ErrorResponse> handleGenericError(Exception ex) {
-//        ErrorResponse error = new ErrorResponse(
-//                "INTERNAL_ERROR",
-//                "Erro interno do servidor",
-//                LocalDateTime.now()
-//        );
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
-//    }
+        /// END VO //
 
     // Error response records
     public record ErrorResponse(

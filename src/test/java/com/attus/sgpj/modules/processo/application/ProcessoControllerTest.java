@@ -40,7 +40,7 @@ class ProcessoControllerTest {
     ProcessoService processoService;
 
     @Test
-    void create_returnsCreated() throws Exception {
+    void deveRetornarCreatedAoCriarProcesso() throws Exception {
         ProcessoRequestDTO req = new ProcessoRequestDTO("12345678901234567890", "Processo de Teste", LocalDate.now());
         ProcessoResponseDTO res = new ProcessoResponseDTO(
                 UUID.randomUUID(),
@@ -64,7 +64,7 @@ class ProcessoControllerTest {
     }
 
     @Test
-    void create_withDefaultConstructor_returnsCreated() throws Exception {
+    void deveRetornarCreatedAoCriarProcessoComConstrutorPadrao() throws Exception {
         ProcessoRequestDTO req = new ProcessoRequestDTO("12345678901234567890", "Processo de Teste");
         ProcessoResponseDTO res = new ProcessoResponseDTO(
                 UUID.randomUUID(),
@@ -88,7 +88,7 @@ class ProcessoControllerTest {
     }
 
     @Test
-    void findById_returnsOk() throws Exception {
+    void deveRetornarOkAoBuscarProcessoPorId() throws Exception {
         UUID id = UUID.randomUUID();
         ProcessoResponseDTO res = new ProcessoResponseDTO(
                 id,
@@ -110,7 +110,7 @@ class ProcessoControllerTest {
     }
 
     @Test
-    void update_returnsOk() throws Exception {
+    void deveRetornarOkAoAtualizarProcesso() throws Exception {
         UUID id = UUID.randomUUID();
         ProcessoRequestDTO req = new ProcessoRequestDTO("11111111111111111111", "Processo Atualizado", LocalDate.now());
         ProcessoResponseDTO res = new ProcessoResponseDTO(
@@ -134,7 +134,7 @@ class ProcessoControllerTest {
     }
 
     @Test
-    void findPaged_returnsOk() throws Exception {
+    void deveRetornarOkAoBuscarProcessosPaginados() throws Exception {
         Mockito.when(processoService.findPaged(0, 10, null, null))
                 .thenReturn(new PageImpl<>(List.of()));
 
@@ -144,7 +144,7 @@ class ProcessoControllerTest {
     }
 
     @Test
-    void findByStatus_returnsOk() throws Exception {
+    void deveRetornarOkAoBuscarProcessosPorStatus() throws Exception {
         ProcessoResponseDTO dto = new ProcessoResponseDTO(
                 UUID.randomUUID(),
                 "22222222222222222222",
@@ -168,7 +168,7 @@ class ProcessoControllerTest {
     }
 
     @Test
-    void findByDataAbertura_returnsOk() throws Exception {
+    void deveRetornarOkAoBuscarProcessosPorDataAbertura() throws Exception {
         LocalDate dataInicial = LocalDate.of(2024, 1, 1);
         LocalDate dataFinal = LocalDate.of(2024, 12, 31);
         LocalDate dataProcesso = LocalDate.of(2024, 6, 15);
@@ -198,7 +198,7 @@ class ProcessoControllerTest {
     }
 
     @Test
-    void findByPessoaId_returnsOk() throws Exception {
+    void deveRetornarOkAoBuscarProcessosPorIdPessoa() throws Exception {
         UUID pessoaId = UUID.randomUUID();
         ProcessoResponseDTO dto = new ProcessoResponseDTO(
                 UUID.randomUUID(),
@@ -222,7 +222,7 @@ class ProcessoControllerTest {
     }
 
     @Test
-    void findByPessoaCpfCnpj_returnsOk() throws Exception {
+    void deveRetornarOkAoBuscarProcessosPorCpfCnpjParteEnvolvida() throws Exception {
         String cpfCnpj = "12345678901";
         ProcessoResponseDTO dto = new ProcessoResponseDTO(
                 UUID.randomUUID(),
@@ -234,7 +234,7 @@ class ProcessoControllerTest {
                 List.of()
         );
 
-        Mockito.when(processoService.findByPessoaCpfCnpj(cpfCnpj, 0, 10))
+        Mockito.when(processoService.findByCpfCnpjParteEnvolvida(cpfCnpj, 0, 10))
                 .thenReturn(new PageImpl<>(List.of(dto)));
 
         mockMvc.perform(get("/processo/pessoa/cpf-cnpj/{cpfCnpj}", cpfCnpj)
@@ -246,7 +246,7 @@ class ProcessoControllerTest {
     }
 
     @Test
-    void ativar_returnsOk() throws Exception {
+    void deveRetornarOkAoAtivarProcesso() throws Exception {
         UUID id = UUID.randomUUID();
         ProcessoResponseDTO res = new ProcessoResponseDTO(
                 id,
@@ -267,7 +267,7 @@ class ProcessoControllerTest {
     }
 
     @Test
-    void suspender_returnsOk() throws Exception {
+    void deveRetornarOkAoSuspenderProcesso() throws Exception {
         UUID id = UUID.randomUUID();
         ProcessoResponseDTO res = new ProcessoResponseDTO(
                 id,
@@ -288,7 +288,7 @@ class ProcessoControllerTest {
     }
 
     @Test
-    void arquivar_returnsOk() throws Exception {
+    void deveRetornarOkAoArquivarProcesso() throws Exception {
         UUID id = UUID.randomUUID();
         ProcessoResponseDTO res = new ProcessoResponseDTO(
                 id,
@@ -309,7 +309,7 @@ class ProcessoControllerTest {
     }
 
     @Test
-    void addParteEnvolvida_returnsOk() throws Exception {
+    void deveRetornarOkAoAdicionarParteEnvolvida() throws Exception {
         UUID processoId = UUID.randomUUID();
         UUID pessoaId = UUID.randomUUID();
         ParteEnvolvidaRequestDTO req = new ParteEnvolvidaRequestDTO(pessoaId, TipoParteEnvolvidaEnum.AUTOR);
@@ -333,7 +333,7 @@ class ProcessoControllerTest {
     }
 
     @Test
-    void addPartesEnvolvidas_returnsOk() throws Exception {
+    void deveRetornarOkAoAdicionarMultiplasPartesEnvolvidas() throws Exception {
         UUID processoId = UUID.randomUUID();
         UUID pessoaId1 = UUID.randomUUID();
         UUID pessoaId2 = UUID.randomUUID();
@@ -361,7 +361,7 @@ class ProcessoControllerTest {
     }
 
     @Test
-    void removeParteEnvolvida_returnsOk() throws Exception {
+    void deveRetornarOkAoRemoverParteEnvolvida() throws Exception {
         UUID processoId = UUID.randomUUID();
         UUID parteId = UUID.randomUUID();
         ProcessoResponseDTO res = new ProcessoResponseDTO(
@@ -382,7 +382,7 @@ class ProcessoControllerTest {
     }
 
     @Test
-    void addAcaoProcesso_returnsOk() throws Exception {
+    void deveRetornarOkAoAdicionarAcaoProcesso() throws Exception {
         UUID processoId = UUID.randomUUID();
         AcaoRequestDTO req = new AcaoRequestDTO(TipoAcaoEnum.PETICAO, "Descrição da petição inicial");
         ProcessoResponseDTO res = new ProcessoResponseDTO(
@@ -405,7 +405,7 @@ class ProcessoControllerTest {
     }
 
     @Test
-    void addAcoesProcesso_returnsOk() throws Exception {
+    void deveRetornarOkAoAdicionarMultiplasAcoesProcesso() throws Exception {
         UUID processoId = UUID.randomUUID();
         List<AcaoRequestDTO> reqList = List.of(
                 new AcaoRequestDTO(TipoAcaoEnum.PETICAO, "Descrição da primeira ação"),
@@ -431,7 +431,7 @@ class ProcessoControllerTest {
     }
 
     @Test
-    void removeAcaoProcesso_returnsOk() throws Exception {
+    void deveRetornarOkAoRemoverAcaoProcesso() throws Exception {
         UUID processoId = UUID.randomUUID();
         UUID acaoId = UUID.randomUUID();
         ProcessoResponseDTO res = new ProcessoResponseDTO(
@@ -452,7 +452,7 @@ class ProcessoControllerTest {
     }
 
     @Test
-    void findById_returnsNotFound() throws Exception {
+    void deveRetornarNotFoundAoBuscarProcessoInexistente() throws Exception {
         UUID id = UUID.randomUUID();
         Mockito.when(processoService.findById(id))
                 .thenThrow(new ProcessoNotFoundException("Processo não encontrado com ID: " + id));
@@ -464,7 +464,7 @@ class ProcessoControllerTest {
     }
 
     @Test
-    void ativar_returnsNotFound_whenProcessoDoesNotExist() throws Exception {
+    void deveRetornarNotFoundAoAtivarProcessoInexistente() throws Exception {
         UUID id = UUID.randomUUID();
         Mockito.when(processoService.ativar(id))
                 .thenThrow(new ProcessoNotFoundException("Processo não encontrado com ID: " + id));
@@ -476,7 +476,7 @@ class ProcessoControllerTest {
     }
 
     @Test
-    void suspender_returnsNotFound_whenProcessoDoesNotExist() throws Exception {
+    void deveRetornarNotFoundAoSuspenderProcessoInexistente() throws Exception {
         UUID id = UUID.randomUUID();
         Mockito.when(processoService.suspender(id))
                 .thenThrow(new ProcessoNotFoundException("Processo não encontrado com ID: " + id));
@@ -488,7 +488,7 @@ class ProcessoControllerTest {
     }
 
     @Test
-    void arquivar_returnsNotFound_whenProcessoDoesNotExist() throws Exception {
+    void deveRetornarNotFoundAoArquivarProcessoInexistente() throws Exception {
         UUID id = UUID.randomUUID();
         Mockito.when(processoService.arquivar(id))
                 .thenThrow(new ProcessoNotFoundException("Processo não encontrado com ID: " + id));

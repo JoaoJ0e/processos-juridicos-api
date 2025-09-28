@@ -2,7 +2,6 @@ package com.attus.sgpj.modules.processo.application;
 
 import com.attus.sgpj.modules.processo.domain.Processo;
 import com.attus.sgpj.modules.processo.domain.StatusProcessoEnum;
-import com.attus.sgpj.shared.vo.CpfCnpj;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

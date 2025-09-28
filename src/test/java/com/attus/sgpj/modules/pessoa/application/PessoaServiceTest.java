@@ -6,7 +6,6 @@ import com.attus.sgpj.modules.pessoa.exception.PessoaAlreadyExistsException;
 import com.attus.sgpj.modules.pessoa.exception.PessoaNotFoundException;
 import com.attus.sgpj.modules.pessoa.domain.Pessoa;
 import com.attus.sgpj.shared.vo.CpfCnpj;
-import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,7 +31,7 @@ class PessoaServiceTest {
     PessoaService pessoaService;
 
     @Test
-    void create_savesAndReturnsResponse() {
+    void deveSalvarERetornarRespostaAoCriarPessoa() {
         PessoaRequestDTO req = new PessoaRequestDTO(
                 "João Silva",
                 "12345678901",
@@ -58,9 +57,8 @@ class PessoaServiceTest {
         assertEquals(req.telefone(), res.telefone());
     }
 
-
     @Test
-    void create_throwsWhenCpfExists() {
+    void deveLancarExcecaoQuandoCpfJaExiste() {
         PessoaRequestDTO req = new PessoaRequestDTO("João Silva", "12345678901", "joao.silva@email.com", "11987654321");
         when(pessoaRepository.existsByCpfCnpj(new CpfCnpj(req.cpfCnpj()))).thenReturn(true);
 
@@ -68,7 +66,7 @@ class PessoaServiceTest {
     }
 
     @Test
-    void update_updatesAndReturnsResponse() {
+    void deveAtualizarERetornarRespostaAoAtualizarPessoa() {
         UUID id = UUID.randomUUID();
         PessoaRequestDTO req = new PessoaRequestDTO("Maria Souza", "98765432100", "maria.souza@email.com", "21987654321");
         Pessoa pessoa = Pessoa.create("Antigo", "11122233344", "antigo@email.com", "11999998888");
@@ -84,7 +82,7 @@ class PessoaServiceTest {
     }
 
     @Test
-    void update_throwsWhenCpfAlreadyExists() {
+    void deveLancarExcecaoQuandoCpfJaExisteAoAtualizar() {
         UUID id = UUID.randomUUID();
         PessoaRequestDTO req = new PessoaRequestDTO("João Silva", "99988877766", "joao@email.com", "11987654321");
         Pessoa pessoa = Pessoa.create("Antigo", "11122233344", "antigo@email.com", "11999998888");
@@ -96,7 +94,7 @@ class PessoaServiceTest {
     }
 
     @Test
-    void findById_returnsResponse() {
+    void deveRetornarRespostaAoBuscarPessoaPorId() {
         UUID id = UUID.randomUUID();
         Pessoa pessoa = Pessoa.create("Carlos Lima", "11122233344", "carlos@email.com", "31987654321");
         when(pessoaRepository.findById(id)).thenReturn(Optional.of(pessoa));
@@ -107,7 +105,7 @@ class PessoaServiceTest {
     }
 
     @Test
-    void findById_throwsWhenNotFound() {
+    void deveLancarExcecaoQuandoPessoaNaoForEncontrada() {
         UUID id = UUID.randomUUID();
         when(pessoaRepository.findById(id)).thenReturn(Optional.empty());
 
@@ -115,7 +113,7 @@ class PessoaServiceTest {
     }
 
     @Test
-    void findPaged_withoutSort_returnsPage() {
+    void deveRetornarPaginaSemOrdenacaoAoBuscarPessoasPaginadas() {
         Pessoa pessoa = Pessoa.create("Ana", "12345678901", "ana@email.com", "41999998888");
         Page<Pessoa> page = new PageImpl<>(List.of(pessoa));
         when(pessoaRepository.findAll(any(Pageable.class))).thenReturn(page);
@@ -127,7 +125,7 @@ class PessoaServiceTest {
     }
 
     @Test
-    void findByNomeContaining_returnsPage() {
+    void deveRetornarPaginaAoBuscarPessoaPorNome() {
         Pessoa pessoa = Pessoa.create("Pedro", "22233344455", "pedro@email.com", "21988887777");
         Page<Pessoa> page = new PageImpl<>(List.of(pessoa));
         when(pessoaRepository.findByNomeCompletoContainingIgnoreCase(eq("pedro"), any(Pageable.class)))
@@ -140,7 +138,7 @@ class PessoaServiceTest {
     }
 
     @Test
-    void findByCpfCnpj_returnsResponse() {
+    void deveRetornarRespostaAoBuscarPessoaPorCpfCnpj() {
         Pessoa pessoa = Pessoa.create("Laura", "55566677788", "laura@email.com", "11911112222");
         when(pessoaRepository.findByCpfCnpj(new CpfCnpj("55566677788"))).thenReturn(Optional.of(pessoa));
 
